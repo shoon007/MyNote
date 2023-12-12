@@ -1,31 +1,30 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('layouts.master')
+@section('content')
+    <div class="note-title d-flex justify-content-between align-items-center mt-2 mb-5">
+        <h2 class=" curly-title link-offset-2">Note Lists</h2>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> My Note</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    <link rel="stylesheet" href="./style.css">
-    <link rel="shortcut icon" href="https://tse1.mm.bing.net/th/id/OIP.wT5_eu5R9vmY4C_2qqz8dgHaHa?rs=1&pid=ImgDetMain" type="image/x-icon">
-    <link rel="stylesheet" href="{{asset('css/style.css')}}">
-</head>
-
-<body>
-
-    <!-- THE WHOLE CONTAINER -->
-    <div class="container pt-5" >
-       <div class="note-title d-flex justify-content-between align-items-center mt-2 mb-5">
-        <h2 class=" text-decoration-underline link-offset-2">Note List</h2>
-
+        <a href="{{ route('note#createPage') }}">
             <button class="Btn">
                 Add Note <i class="fa-solid fa-plus ps-2"></i>
-              </button>
+            </button>
+        </a>
     </div>
-
+    @if (session('createSuccess'))
+        <div class="alert alert-box alert-success alert-dismissible fade show" role="alert">
+            <p class="text-success mb-0">{{ session('createSuccess') }}</p>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+    @if (session('updateSuccess'))
+        <div class="alert alert-box alert-success alert-dismissible fade show" role="alert">
+            <p class="text-success mb-0">{{ session('updateSuccess') }}</p>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
     <div class="note">
-        <table>
+
+        @if (count($notes) > 0)
+            <table>
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -37,27 +36,29 @@
                 </thead>
                 <tbody>
 
+                    @foreach ($notes as $note)
                         <tr>
-                            <td>1</td>
-                            <td>this is hw</td>
-                            <td>i gotta do some coding in js</td>
-                            <td>1</td>
+                            <td>{{ $note->id }} </td>
+                            <td>{{ $note->title }}</td>
+                            <td>
+                                {{ substr($note->description, 0, 20) }}... </td>
+                            <td>{{ $note->status == 1 ? 'On' : 'Off' }} </td>
                             <td>
 
                                 <ul class="wrapper">
-                                    <a href="">
+                                    <a href="{{ route('note#details', $note->id) }}">
                                         <li class="icon ">
                                             <span class="tooltip">Details</span>
                                             <span> <i class="fa-solid fa-circle-info detail "></i></span>
                                         </li>
                                     </a>
-                                    <a href="">
+                                    <a href="{{ route('note#edit', $note->id) }}">
                                         <li class="icon">
                                             <span class="tooltip">Edit</span>
                                             <span> <i class="fa-solid fa-file-pen pen wrapper "></i></span>
                                         </li>
                                     </a>
-                                    <a href="">
+                                    <a href="{{ route('note#delete', $note->id) }}">
                                         <li class="icon ">
                                             <span class="tooltip">Delete</span>
                                             <span> <i class="fa-solid fa-trash delete "></i></span>
@@ -68,19 +69,20 @@
 
                             </td>
                         </tr>
+                    @endforeach
 
-        {{--    @else
-                    <h1 class="text-center error-title">There is no Category here!
-                        <a href="{{ route('category#createPage') }}">Create one here!</a>
-                    </h1>
-            @endif  --}}
-            </tbody>
-        </table>
+                </tbody>
+            </table>
+        @else
+            <h1 class="text-center empty-box">
+                There is no Note yet!
+
+            </h1>
+        @endif
+        <div class="mt-4">
+            {{ $notes->links() }}
+        </div>
+
     </div>
 
-
-    </div>
-</body>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-</html>
+@endsection

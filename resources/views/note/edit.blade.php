@@ -1,28 +1,28 @@
 @extends('layouts.master')
 @section('content')
     <h2 class="curly-title link-offset-2">
-        Create Note</h2>
-    <a href="{{ route('note#listPage') }}">
-        <button class="back-btn mb-4">
-            <svg height="16" width="16" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 1024 1024">
-                <path
-                    d="M874.690416 495.52477c0 11.2973-9.168824 20.466124-20.466124 20.466124l-604.773963 0 188.083679 188.083679c7.992021 7.992021 7.992021 20.947078 0 28.939099-4.001127 3.990894-9.240455 5.996574-14.46955 5.996574-5.239328 0-10.478655-1.995447-14.479783-5.996574l-223.00912-223.00912c-3.837398-3.837398-5.996574-9.046027-5.996574-14.46955 0-5.433756 2.159176-10.632151 5.996574-14.46955l223.019353-223.029586c7.992021-7.992021 20.957311-7.992021 28.949332 0 7.992021 8.002254 7.992021 20.957311 0 28.949332l-188.073446 188.073446 604.753497 0C865.521592 475.058646 874.690416 484.217237 874.690416 495.52477z">
-                </path>
-            </svg>
-            <span>Back</span>
-        </button>
-    </a>
+        Edit Note</h2>
+
+    <button class="back-btn mb-4" onclick="history.back()">
+        <svg height="16" width="16" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 1024 1024">
+            <path
+                d="M874.690416 495.52477c0 11.2973-9.168824 20.466124-20.466124 20.466124l-604.773963 0 188.083679 188.083679c7.992021 7.992021 7.992021 20.947078 0 28.939099-4.001127 3.990894-9.240455 5.996574-14.46955 5.996574-5.239328 0-10.478655-1.995447-14.479783-5.996574l-223.00912-223.00912c-3.837398-3.837398-5.996574-9.046027-5.996574-14.46955 0-5.433756 2.159176-10.632151 5.996574-14.46955l223.019353-223.029586c7.992021-7.992021 20.957311-7.992021 28.949332 0 7.992021 8.002254 7.992021 20.957311 0 28.949332l-188.073446 188.073446 604.753497 0C865.521592 475.058646 874.690416 484.217237 874.690416 495.52477z">
+            </path>
+        </svg>
+        <span>Back</span>
+    </button>
+
     <div class="form-container">
 
-        <form action="{{ route('note#create') }}" method="post" enctype="multipart/form-data">
+        <form action="{{ route('note#update') }}" method="post" enctype="multipart/form-data">
             @csrf
-
+            <input name="noteId" hidden value="{{ $note->id }}">
             <div class="d-flex justify-content-center w-100 mt-3 mb-3">
 
                 <span class="note-text"> Title -</span>
 
                 <div class="d-flex flex-column ">
-                    <input type="text" placeholder="Title" name="title" value="{{ old('title') }}">
+                    <input type="text" placeholder="Title" name="title" value="{{ old('title', $note->title) }}">
 
                     @error('title')
                         <small class="text-danger mt-2">{{ $message }}</small>
@@ -35,21 +35,19 @@
                     Description -
                 </span>
                 <div class="d-flex flex-column  ">
-                    <textarea placeholder="Description" id="" cols="30" rows="10" name="description">{{ old('description') }} </textarea>
+                    <textarea placeholder="Description" id="" cols="30" rows="10" name="description">{{ old('description', $note->description) }} </textarea>
                     @error('description')
                         <small class="text-danger mt-2">{{ $message }}</small>
                     @enderror
                 </div>
             </div>
-
             <div class="d-flex justify-content-center w-100 mt-3 mb-3">
                 <span class="note-text"> Status - </span>
                 <div class="d-flex flex-column  ">
                     <select name="status" id="" class="form-select my-custom-select">
                         <option value="">Choose one</option>
-                        <option value="1" @if (old('status') == '1') selected="selected" @endif>
-                            On</option>
-                        <option value="0" @if (old('status') == '0') selected="selected" @endif>Off</option>
+                        <option value="1" {{ old('status', $note->status) == 1 ? 'selected' : '' }}>On</option>
+                        <option value="0" {{ old('status', $note->status) == 0 ? 'selected' : '' }}>Off</option>
                     </select>
                     @error('status')
                         <small class="text-danger mt-2 ">{{ $message }}</small>
@@ -59,7 +57,7 @@
             </div>
 
             <button class="button" type="submit">
-                Create
+                Update
                 <div class="hoverEffect">
                     <div>
                     </div>
